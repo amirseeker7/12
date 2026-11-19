@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>شکارچی نگاه تیزبین | تقویت حوزه دید</title>
+<style>
+:root{
+  --ink:#24345b;--pink:#ff6fae;--yellow:#ffd45c;--blue:#68d5f2;
+  --green:#8de0b1;--purple:#a99bff;--paper:#fffdf7;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;min-height:100vh;font-family:Tahoma,Arial,sans-serif;color:var(--ink);
+  background:linear-gradient(135deg,#dff8ff 0%,#f4e8ff 48%,#fff1d0 100%);
+  overflow-x:hidden;
+}
+body::before{
+  content:"کارگروه پایه سوم استان البرز";position:fixed;inset:0;display:flex;
+  align-items:center;justify-content:center;pointer-events:none;z-index:0;
+  font-size:clamp(25px,5vw,66px);font-weight:900;color:#536ca5;opacity:.075;
+  transform:rotate(-24deg);white-space:nowrap;
+}
+main{position:relative;z-index:1;max-width:1050px;margin:auto;padding:18px}
+header{
+  text-align:center;padding:20px 16px 18px;border:4px solid white;border-radius:28px;
+  background:linear-gradient(120deg,#fff,#fff8df);box-shadow:0 8px 0 #c6d8f4,0 12px 25px #6b7ca522;
+}
+.badge{display:inline-block;background:#e9e4ff;border:2px solid white;border-radius:999px;padding:7px 14px;font-size:14px;font-weight:bold}
+h1{margin:10px 0 5px;font-size:clamp(27px,5vw,44px);color:#674bc2}
+.subtitle{margin:0;font-size:clamp(14px,2.5vw,18px);line-height:1.8}
+.mascot{font-size:52px;display:block;animation:bob 2s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-7px) rotate(4deg)}}
+.panel{background:#ffffffdf;border:3px solid white;border-radius:24px;padding:18px;margin-top:18px;box-shadow:0 7px 0 #b8c9e9}
+.row{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;align-items:center}
+.stat{background:#f0f5ff;border-radius:15px;padding:10px 14px;font-weight:bold;min-width:120px;text-align:center}
+button,select{font:inherit;border:0;border-radius:14px;padding:12px 17px;cursor:pointer;font-weight:bold}
+button{background:#6f5bd3;color:white;box-shadow:0 4px 0 #4e3ca8;transition:transform .12s}
+button:hover{filter:brightness(1.05);transform:translateY(-2px)}
+button:active{transform:translateY(2px);box-shadow:0 2px 0 #4e3ca8}
+button.secondary{background:#ff80b5;box-shadow:0 4px 0 #d84d89}
+button.sun{background:#ffcf4d;color:#573f00;box-shadow:0 4px 0 #d9a92d}
+select{background:#f3efff;border:2px solid #ded5ff;color:var(--ink)}
+.instructions{text-align:center;line-height:1.9;margin:8px auto 16px;max-width:760px}
+#gameArea{display:none}
+#prompt{font-size:clamp(19px,3.5vw,27px);font-weight:900;text-align:center;margin:5px 0 14px}
+#target{display:inline-block;background:#fff1a8;border:3px dashed #ffb83d;border-radius:13px;padding:5px 13px;font-size:1.25em}
+#grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px;max-width:700px;margin:0 auto}
+.tile{
+  aspect-ratio:1;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(145deg,#fff,#eafaff);border:3px solid white;
+  border-radius:18px;box-shadow:0 4px 0 #c6d8ef;font-size:clamp(26px,6vw,47px);
+  user-select:none;min-width:0;transition:transform .12s,background .12s;
+}
+.tile:hover{transform:scale(1.04)}
+.tile.correct{background:#c8ffe0;border-color:#35bd7a}
+.tile.wrong{background:#ffd4e5;border-color:#ff6fae;animation:shake .25s}
+@keyframes shake{25%{transform:translateX(4px)}75%{transform:translateX(-4px)}}
+#feedback{min-height:34px;text-align:center;font-size:18px;font-weight:bold;margin:14px 0 4px}
+.progress-wrap{height:13px;background:#e5e8f6;border-radius:20px;overflow:hidden;margin:12px auto;max-width:700px}
+#progress{height:100%;width:0;background:linear-gradient(90deg,#73dfb0,#63c8f4,#ad91ff);transition:width .3s}
+#endScreen{display:none;text-align:center}
+.bigScore{font-size:clamp(30px,7vw,55px);font-weight:900;color:#6b50cb;margin:8px}
+footer{text-align:center;margin:20px 0 5px;font-size:14px;line-height:1.9;font-weight:bold}
+footer .designer{display:inline-block;background:white;border:2px solid #f5d77e;border-radius:999px;padding:8px 17px}
+.small{font-size:13px;color:#53658c}
+@media(max-width:520px){main{padding:10px}#grid{gap:6px}.tile{border-radius:12px;border-width:2px}.panel{padding:12px}.stat{min-width:95px}}
+</style>
+</head>
+<body>
+<main>
+<header>
+  <span class="badge">🎯 بازی آموزشی پایه سوم</span>
+  <span class="mascot" aria-hidden="true">🦉🌈</span>
+  <h1>شکارچی نگاه تیزبین</h1>
+  <p class="subtitle">با چشم‌های تیزبینت شکل‌های هدف را پیدا کن و ستاره جمع کن! ⭐</p>
+</header>
+
+<section class="panel" id="startScreen">
+  <h2 style="text-align:center;margin:0 0 8px">🌟 آماده‌ای، قهرمان؟</h2>
+  <p class="instructions">در هر مرحله، شکل یا نشانه‌ای را که بالای صفحه می‌بینی، در جدول پیدا کن و روی همه نمونه‌های آن بزن. این بازی به تمرکز دیداری، جست‌وجوی دیداری و توجه به جزئیات کمک می‌کند.</p>
+  <div class="row" style="margin-bottom:14px">
+    <label for="difficulty"><b>سطح بازی:</b></label>
+    <select id="difficulty">
+      <option value="easy">آسان — ۱۲ شکل</option>
+      <option value="normal" selected>متوسط — ۲۰ شکل</option>
+      <option value="hard">چالشی — ۳۰ شکل</option>
+    </select>
+    <label for="mode"><b>نوع هدف:</b></label>
+    <select id="mode">
+      <option value="emoji" selected>شکل‌های رنگی</option>
+      <option value="symbol">نشانه‌های دیداری</option>
+      <option value="letter">حروف فارسی</option>
+    </select>
+  </div>
+  <div class="row"><button onclick="startGame()">🚀 شروع بازی</button></div>
+  <p class="small" style="text-align:center;margin-bottom:0">پیشنهاد کلاسی: دانش‌آموزان می‌توانند نوبتی بازی کنند و راهبرد جست‌وجوی خود را توضیح دهند.</p>
+</section>
+
+<section class="panel" id="gameArea">
+  <div class="row">
+    <div class="stat">مرحله: <span id="round">۱</span>/<span id="totalRounds">۵</span></div>
+    <div class="stat">⭐ امتیاز: <span id="score">۰</span></div>
+    <div class="stat">پیدا شده: <span id="found">۰</span>/<span id="needed">۰</span></div>
+  </div>
+  <div class="progress-wrap"><div id="progress"></div></div>
+  <div id="prompt">همه‌ی <span id="target">⭐</span>ها را پیدا کن!</div>
+  <div id="grid" aria-label="جدول بازی"></div>
+  <div id="feedback" aria-live="polite">با دقت نگاه کن و روی هدف‌ها بزن.</div>
+  <div class="row"><button class="secondary" onclick="hint()">💡 راهنمایی</button><button class="sun" onclick="quitGame()">⏸ پایان بازی</button></div>
+</section>
+
+<section class="panel" id="endScreen">
+  <div style="font-size:55px">🏆🎉</div>
+  <h2>آفرین، شکارچی تیزبین!</h2>
+  <div class="bigScore"><span id="finalScore">۰</span> امتیاز</div>
+  <p id="resultText" class="instructions"></p>
+  <div class="row"><button onclick="startGame()">🔁 بازی دوباره</button><button class="secondary" onclick="backHome()">🏠 صفحه آغاز</button></div>
+</section>
+
+<footer>
+  <div class="designer">✏️ طراح: سعیده محمودیان</div><br>
+  <span>کارگروه پایه سوم استان البرز</span>
+</footer>
+</main>
+<script>
+const faDigits = n => String(n).replace(/\d/g,d=>'۰۱۲۳۴۵۶۷۸۹'[+d]);
+const sets = {
+ emoji:['⭐','🌙','☀️','❤️','🍎','🍀','🎈','🐟','🌸','🦋','🍓','⚽','🌼','🚗','🎁','🐸'],
+ symbol:['○','●','△','▲','□','■','◇','◆','☆','★','♡','♥','＋','×','☾','☀'],
+ letter:['ب','پ','ت','ث','ج','چ','ح','خ','د','ذ','ر','ز','س','ش','م','ن']
+};
+let round=0,totalRounds=5,score=0,found=0,needed=0,target='',locked=false,tiles=[];
+const $=id=>document.getElementById(id);
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function startGame(){
+ round=0;score=0;locked=false;
+ $('startScreen').style.display='none';$('endScreen').style.display='none';$('gameArea').style.display='block';
+ totalRounds=5;$('totalRounds').textContent=faDigits(totalRounds);nextRound();
+}
+function nextRound(){
+ if(round>=totalRounds){endGame();return}
+ round++;found=0;locked=false;
+ const level=$('difficulty').value;
+ const count=level==='easy'?12:level==='hard'?30:20;
+ const cols=count===12?4:5;
+ const pool=sets[$('mode').value];
+ target=pool[Math.floor(Math.random()*pool.length)];
+ needed=round===5?Math.min(5,Math.max(2,Math.round(count*.2))):Math.min(4,Math.max(2,Math.round(count*.15)));
+ // Pick a target count appropriate to the board.
+ needed=count===12?3:(count===30?5:4);
+ let arr=Array(needed).fill(target);
+ const distractors=pool.filter(x=>x!==target);
+ while(arr.length<count) arr.push(distractors[Math.floor(Math.random()*distractors.length)]);
+ shuffle(arr);tiles=arr;
+ $('round').textContent=faDigits(round);$('score').textContent=faDigits(score);
+ $('found').textContent=faDigits(found);$('needed').textContent=faDigits(needed);
+ $('target').textContent=target;
+ $('prompt').innerHTML='همه‌ی <span id="target">'+target+'</span>ها را پیدا کن!';
+ $('grid').style.gridTemplateColumns=`repeat(${cols},minmax(0,1fr))`;
+ $('grid').innerHTML='';
+ arr.forEach((symbol,i)=>{
+   const b=document.createElement('button');b.className='tile';b.type='button';b.textContent=symbol;
+   b.setAttribute('aria-label','شکل '+symbol);b.onclick=()=>choose(b,symbol);$('grid').appendChild(b);
+ });
+ $('progress').style.width=((round-1)/totalRounds*100)+'%';
+ $('feedback').textContent='چشم‌ها آماده؟ همه‌ی هدف‌ها را پیدا کن! 👀';
+}
+function choose(btn,symbol){
+ if(locked||btn.classList.contains('correct')||btn.classList.contains('wrong'))return;
+ if(symbol===target){
+   btn.classList.add('correct');btn.disabled=true;found++;score+=10;
+   $('found').textContent=faDigits(found);$('score').textContent=faDigits(score);
+   $('feedback').textContent=['آفرین! چه نگاه دقیقی! 🌟','درست پیدا کردی! 👏','عالی بود! ادامه بده! 🎉'][Math.floor(Math.random()*3)];
+   if(found===needed){locked=true;$('progress').style.width=(round/totalRounds*100)+'%';$('feedback').textContent='مرحله کامل شد! '+(round<totalRounds?'برای مرحله بعد آماده شو! 🚀':'وقت دیدن نتیجه است! 🏆');setTimeout(nextRound,1100)}
+ }else{
+   btn.classList.add('wrong');score=Math.max(0,score-2);$('score').textContent=faDigits(score);
+   $('feedback').textContent='این یکی هدف نیست؛ دوباره با دقت نگاه کن! 🔎';
+   setTimeout(()=>btn.classList.remove('wrong'),500);
+ }
+}
+function hint(){
+ const b=[...$('grid').children].find(x=>x.textContent===target&&!x.classList.contains('correct'));
+ if(b){b.style.outline='4px solid #ffbf3f';b.style.transform='scale(1.08)';$('feedback').textContent='راهنمایی: به شکل‌های شبیه هدف توجه کن! 💡';setTimeout(()=>{b.style.outline='';b.style.transform=''},900)}
+}
+function endGame(){
+ $('gameArea').style.display='none';$('endScreen').style.display='block';
+ $('finalScore').textContent=faDigits(score);
+ const max=totalRounds*(( $('difficulty').value==='easy'?3:$('difficulty').value==='hard'?5:4)*10);
+ $('resultText').textContent=score>=max*.8?'فوق‌العاده بود! تمرکز دیداری‌ات عالی است. 🌈':score>=max*.5?'آفرین! با تمرین بیشتر، چشم‌هایت تیزبین‌تر می‌شوند. 💪':'تلاش خوبی کردی! یک بار دیگر بازی کن و این بار خانه‌به‌خانه جست‌وجو کن. 💛';
+ $('progress').style.width='100%';
+}
+function quitGame(){endGame()}
+function backHome(){$('endScreen').style.display='none';$('gameArea').style.display='none';$('startScreen').style.display='block'}
+</script>
+</body>
+</html>
